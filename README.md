@@ -55,18 +55,19 @@ SERVING_ENDPOINT_NAME=<your-serving-endpoint-name>
 
 ## Setup and Installation
 
+> **Note**: The following steps provide high-level guidance for setting up the Databricks AI Agent Bot. These instructions are not exhaustive and assume familiarity with Azure services, Databricks, and Microsoft Teams development. Additional configuration and troubleshooting may be required based on your specific environment and requirements.
+
 ### 1. Databricks Configuration
 
 #### Create a Serving Endpoint
 1. In your Databricks workspace, navigate to **Serving**
-2. Create a new serving endpoint or use an existing one that supports chat completions
+2. Create a new serving endpoint or use an existing one that supports the OpenAI Responses API
 3. Note the endpoint name for the `SERVING_ENDPOINT_NAME` environment variable
-4. Ensure the endpoint supports the OpenAI chat completions format
+4. Ensure the endpoint supports the OpenAI Responses API format
 
-#### Configure OAuth Token Exchange
-1. Set up OIDC token exchange in your Databricks workspace
-2. Configure the workspace to accept Microsoft Entra ID tokens
-3. Ensure the `/oidc/v1/token` endpoint is accessible
+#### Configure OAuth Token Federation Policy
+1. Follow this guide to configure federation policy: [Configure a federation policy - Azure Databricks | Microsoft Learn](https://learn.microsoft.com/en-us/azure/databricks/dev-tools/cli/authentication#configure-a-federation-policy)
+2. Test token exchange using this guide: [Authenticate with an identity provider token - Azure Databricks | Microsoft Learn](https://learn.microsoft.com/en-us/azure/databricks/dev-tools/auth/oauth-federation-exchange#exchange-a-federated-jwt-for-a-databricks-oauth-token)
 
 ### 2. Azure Bot Service Configuration
 
@@ -81,7 +82,8 @@ SERVING_ENDPOINT_NAME=<your-serving-endpoint-name>
 2. Create a new connection with:
    - **Name**: Use for `ConnectionName` environment variable
    - **Service Provider**: Microsoft Entra ID v2
-   - **Scopes**: `openid profile User.Read` (or as required by your Databricks setup)
+   - **Scopes**: `access_as_user` (exposed API scope for V2 access token)
+3. For scope creation reference: [Configure an application to expose a web API - Microsoft Learn](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-configure-app-expose-web-apis#add-a-scope)
 
 ### 3. Teams App Configuration
 
