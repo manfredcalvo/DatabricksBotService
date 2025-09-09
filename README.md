@@ -1,14 +1,14 @@
 # Databricks AI Agent Bot for Microsoft Teams
 
-A sophisticated Microsoft Teams bot that provides AI agent capabilities through Databricks serving endpoints, featuring secure OAuth authentication and intelligent conversation management.
+A sophisticated Microsoft Teams bot that provides AI agent capabilities through Databricks serving endpoints, featuring secure OAuth authentication on behalf of the user and intelligent conversation management.
 
 ## Overview
 
-This bot integrates Microsoft Teams with Databricks AI/ML serving endpoints to provide users with an intelligent conversational AI agent directly within Teams. The bot handles secure authentication using OAuth with token exchange, maintains conversation history, and supports advanced features like tool calling with visual feedback through adaptive cards.
+This bot integrates Microsoft Teams with Databricks AI/ML serving endpoints to provide users with an intelligent conversational AI agent directly within Teams. The bot handles secure authentication using OAuth with token exchange on behalf of the user, maintains conversation history, and supports advanced features like tool calling with visual feedback through adaptive cards.
 
 ## Key Features
 
-* **🔐 Secure Authentication**: OAuth integration with Microsoft identity providers and token exchange to Databricks
+* **🔐 Secure Authentication**: OAuth integration with Microsoft identity providers and token exchange to Databricks on behalf of the user
 * **🤖 AI Agent Integration**: Direct connection to Databricks AI/ML serving endpoints
 * **💬 Conversation Management**: Maintains conversation history across interactions
 * **🛠️ Tool Calling Support**: Advanced function calling capabilities with visual adaptive card feedback
@@ -19,7 +19,7 @@ This bot integrates Microsoft Teams with Databricks AI/ML serving endpoints to p
 
 ### Authentication Flow
 1. User authenticates with Microsoft OAuth via Teams
-2. Bot exchanges Microsoft token for Databricks token using OIDC token exchange
+2. Bot exchanges Microsoft token for Databricks token using OIDC token exchange on behalf of the user
 3. Databricks token is used to authenticate with serving endpoints
 
 ### Component Overview
@@ -211,26 +211,6 @@ DatabricksBotService/
 │   └── logout_dialog.py     # Logout functionality
 └── helpers/                  # Utility classes
     └── dialog_helper.py     # Dialog execution helpers
-```
-
-## Deployment
-
-### Azure App Service Deployment
-1. **Create App Service**: Create a new App Service in Azure Portal
-2. **Configure Environment**: Set all required environment variables in App Service Configuration
-3. **Deploy Code**: Use GitHub Actions, Azure DevOps, or direct deployment
-4. **Update Bot Registration**: Update the messaging endpoint to your App Service URL
-5. **SSL Certificate**: Ensure HTTPS is enabled (required for Teams)
-
-### Docker Deployment
-```dockerfile
-FROM python:3.11-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY . .
-EXPOSE 8000
-CMD ["python", "app.py"]
 ```
 
 ## Troubleshooting
