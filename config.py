@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright (c) Microsoft Corporation. All rights reserved.
+# Copyright © Databricks, Inc. All rights reserved.
 # Licensed under the MIT License.
 
 import os
@@ -18,3 +18,4 @@ class DefaultConfig:
     CONNECTION_NAME = os.environ.get("ConnectionName", "")
     DATABRICKS_HOST = os.environ.get("DATABRICKS_HOST", "")
     SERVING_ENDPOINT_NAME = os.environ.get("SERVING_ENDPOINT_NAME", "")
+    GENIE_SPACE_ID = os.environ.get("GENIE_SPACE_ID", "")
