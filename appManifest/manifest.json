@@ -35,8 +35,13 @@
       "supportsFiles": false
     }
   ],
+  "permissions": [
+    "identity",
+    "messageTeamMembers"
+  ],
   "validDomains": [
     "mychatbotteams.azurewebsites.net",
-    "token.botframework.com"
+    "token.botframework.com",
+    "login.microsoftonline.com"
   ]
 }

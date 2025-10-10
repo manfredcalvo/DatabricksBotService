@@ -1,4 +1,4 @@
-# Copyright (c) Microsoft Corporation. All rights reserved.
+# Copyright © Databricks, Inc. All rights reserved.
 # Licensed under the MIT License.
 
 from typing import List
@@ -31,7 +31,7 @@ class AuthBot(DialogBot):
             # To learn more about Adaptive Cards, see https://aka.ms/msbot-adaptivecards for more details.
             if member.id != turn_context.activity.recipient.id:
                 await turn_context.send_activity(
-                    "Welcome to Teams Authentication Bot Example. Type 'logout' to sign out."
+                    "Welcome to Databricks Bot Example. Type 'logout' to sign out."
                 )
 
     async def on_token_response_event(self, turn_context: TurnContext):

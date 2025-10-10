@@ -1,4 +1,4 @@
-# Copyright (c) Microsoft Corporation. All rights reserved.
+# Copyright © Databricks, Inc. All rights reserved.
 # Licensed under the MIT License.
 
 from botbuilder.core import UserState, ConversationState, CardFactory, MessageFactory
@@ -55,12 +55,13 @@ class MainDialog(LogoutDialog):
                 OAuthPrompt.__name__,
                 OAuthPromptSettings(
                     connection_name=connection_name,
-                    text="Please Sign In Before Interacting with the Bot.",
+                    text="Sign into Databricks to chat with agents.",
                     title="Sign In",
                     timeout=300000
                 )
             )
-        self.databricks_client = DatabricksClient(databricks_host, serving_endpoint_name)
+        self.databricks_client = DatabricksClient(databricks_host)
+        self.serving_endpoint_name = serving_endpoint_name
 
         self.add_dialog(self.oauth_prompt)
 
@@ -99,19 +100,25 @@ class MainDialog(LogoutDialog):
 
     async def send_response_activities(self, input_text, response, new_history, dc_context):
         new_history.append({"role": "user", "content": input_text})
+        new_history.extend(response)
         tool_calls = dict()
         for item in response:
-            if item["type"] == "message":
-                await dc_context.send_activity(item["text"])
-                new_history.append({"role": "assistant", "content": item["text"]})
-            elif item["type"] == "tool_call":
-                tool_calls[item["call_id"]] = item
-            elif item["type"] == "tool_result":
+            if item["role"] == "assistant" and "tool_calls" not in item:
+                await dc_context.send_activity(item["content"])
+            elif item["role"] == "assistant" and "tool_calls" in item:
+                if item["content"]:
+                    await dc_context.send_activity(item["content"])
+                for tool_call in item["tool_calls"]:
+                    tool_calls[tool_call["id"]] = tool_call
+            elif item["role"] == "tool":
                 assert item[
-                           "call_id"] in tool_calls, f"Every tool call must have a tool result. Call id: {item['call_id']}"
-                tool_calls[item["call_id"]].update(item)
+                           "tool_call_id"] in tool_calls, f"Every tool call must have a tool result. Call id: {item['tool_call_id']}"
+                tool_call = tool_calls[item["tool_call_id"]]
+                tool_info = {"name": tool_call["function"]["name"],
+                             "arguments": tool_call["function"]["arguments"],
+                             "output": item["content"]}
                 activity = MessageFactory.attachment(
-                    CardFactory.adaptive_card(self.create_tool_call_card(tool_calls[item["call_id"]])))
+                    CardFactory.adaptive_card(self.create_tool_call_card(tool_info)))
                 await dc_context.send_activity(activity)
         return new_history
 
@@ -130,8 +137,14 @@ class MainDialog(LogoutDialog):
                 # Call Databricks agent API.
                 input_text = step_context.context.activity.text.lower()
                 actual_history = await self.history.get(step_context.context, default_value_or_factory=list)
-                response = await self.databricks_client.call_model_endpoint(input_text, str(token_response.token), actual_history)
-                new_history = await self.send_response_activities(input_text, response, actual_history, step_context.context)
+                response = await self.databricks_client.call_model_endpoint(self.serving_endpoint_name,
+                                                                            input_text,
+                                                                            str(token_response.token),
+                                                                            actual_history)
+                new_history = await self.send_response_activities(input_text,
+                                                                  response,
+                                                                  actual_history,
+                                                                  step_context.context)
                 await self.history.set(step_context.context, new_history)
                 return await step_context.end_dialog()
             except Exception as e:
