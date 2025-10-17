@@ -1,8 +1,8 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.19/MicrosoftTeams.schema.json",
   "manifestVersion": "1.19",
-  "version": "1.0",
-  "id": "8802b634-6b26-4299-bab7-696591b0f2b7",
+  "version": "1.0.0",
+  "id": "<app_id>",
   "developer": {
     "name": "Databricks, inc",
     "websiteUrl": "https://www.databricks.com/",
@@ -10,8 +10,8 @@
     "termsOfUseUrl": "https://www.databricks.com/"
   },
   "name": {
-    "short": "Teams Auth OBO",
-    "full": "Teams Auth On Behalf Of The User"
+    "short": "Teams-Databricks Auth OBO",
+    "full": "Teams-Databricks Auth On Behalf Of The User"
   },
   "description": {
     "short": "Demonstrates authorization in Teams against Databricks agent using OOB.",
@@ -24,7 +24,7 @@
   "accentColor": "#abcdef",
   "bots": [
     {
-      "botId": "8802b634-6b26-4299-bab7-696591b0f2b7",
+      "botId": "<app_id>",
       "scopes": [
         "team",
         "personal"
@@ -40,8 +40,7 @@
     "messageTeamMembers"
   ],
   "validDomains": [
-    "mychatbotteams.azurewebsites.net",
-    "token.botframework.com",
-    "login.microsoftonline.com"
+    "<web_app_domain>",
+    "token.botframework.com"
   ]
 }

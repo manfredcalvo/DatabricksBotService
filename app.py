@@ -94,6 +94,13 @@ async def messages(req: Request) -> Response:
     try:
         # Process activity with the bot adapter and bot logic
         response = await ADAPTER.process(req, BOT)
+
+        if response and response.body == b'null':
+            response.body = None
+
+        logging.info(f"Response output: {response}")
+        logging.info(f"Response body output: {response.body}")
+
         return response
 
     except Exception as e:
