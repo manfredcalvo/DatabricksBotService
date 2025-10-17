@@ -26,8 +26,8 @@
     {
       "botId": "<app_id>",
       "scopes": [
-        "personal",
-        "groupChat"
+        "team",
+        "personal"
       ],
       "isNotificationOnly": false,
       "supportsCalling": false,
